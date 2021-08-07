@@ -182,6 +182,29 @@ Traceback (most recent call last):
 stdeb.util.CalledProcessError: 2
 ```
 
+### python3-backgroundremover : Depends: python3-six (= 1.16.0) but 1.14.0-2 is to be installed
+
+When trying to install the debian package,
+you get an error messagecomplaining about "python3-six" and other python packages.
+
+```
+$ LANG=C sudo apt install  python3-backgroundremover
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Some packages could not be installed. This may mean that you have
+requested an impossible situation or if you are using the unstable
+distribution that some required packages have not yet been created
+or been moved out of Incoming.
+The following information may help to resolve the situation:
+
+The following packages have unmet dependencies:
+ python3-backgroundremover : Depends: python3-six (= 1.16.0) but 1.14.0-2 is to be installed
+                             Depends: python3-torch but it is not installable
+                             Depends: python3-torchvision but it is not installable
+E: Unable to correct problems, you have held broken packages.
+```
+
 Links
 -----
 
