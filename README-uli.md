@@ -12,7 +12,6 @@ using this version produces errors like
 So make sure to create/install version 0.10 of python3-stdeb.
 For details, see section [stdeb](#stdeb)!
 
-
 ```
 $ sudo apt install python3-stdeb
 $ sudo apt install dh-python
