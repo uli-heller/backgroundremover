@@ -10,6 +10,8 @@ is available within the standard repos. Unfortunately,
 using this version produces errors like
 "dpkg-query: no packages found matching python-all".
 So make sure to create/install version 0.10 of python3-stdeb.
+For details, see section [stdeb](#stdeb)!
+
 
 ```
 $ sudo apt install python3-stdeb
@@ -88,6 +90,17 @@ Traceback (most recent call last):
     raise CalledProcessError(retcode)
 stdeb.util.CalledProcessError: 2
 ```
+
+stdeb
+-----
+
+- Download source packages from [launchpad](https://launchpad.net/ubuntu/impish/+source/stdeb)
+   - [DSC](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0-1.dsc)
+   - [ORIG.TAR.GZ](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0.orig.tar.gz)
+   - [DEBIAN.TAR.XZ](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0-1.debian.tar.xz)
+- Extract: `dpkg-source -x stdeb_0.10.0-1.dsc`
+- Build: `( cd stdeb-0.10.0; dpkg-buildpackage )`
+- Install: `sudo dpkg -i python3-stdeb_0.10.0-1_all.deb`
 
 Links
 -----
