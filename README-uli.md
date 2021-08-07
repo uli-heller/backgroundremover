@@ -17,11 +17,78 @@ $ sudo apt install python3-stdeb
 $ sudo apt install dh-python
 ```
 
-Create XXX
-----------
+Create Debian Source Packages
+-----------------------------
 
 ```
-$ python3 setup.py --command-packages=stdeb.command sdist_dsc --with-python3=true
+$ python3 setup.py --command-packages=stdeb.command sdist_dsc
+running sdist_dsc
+running egg_info
+creating src/backgroundremover.egg-info
+...
+dpkg-buildpackage: info: full upload (original source is included)
+dpkg-source: warning: extracting unsigned source package (backgroundremover_0.1.7-1.dsc)
+dpkg-source: info: extracting backgroundremover in backgroundremover-0.1.7
+dpkg-source: info: unpacking backgroundremover_0.1.7.orig.tar.gz
+dpkg-source: info: unpacking backgroundremover_0.1.7-1.debian.tar.xz
+```
+
+Produces these files:
+
+- backgroundremover-0.1.7.tar.gz
+- deb_dist/backgroundremover_0.1.7-1.debian.tar.xz
+- deb_dist/backgroundremover_0.1.7-1.dsc
+- deb_dist/backgroundremover_0.1.7-1_source.buildinfo
+- deb_dist/backgroundremover_0.1.7-1_source.changes
+- deb_dist/backgroundremover_0.1.7.orig.tar.gz
+- dist/backgroundremover-0.1.7.tar.gz
+
+Create Debian Package
+---------------------
+
+You basically need the files
+
+- deb_dist/backgroundremover_0.1.7-1.debian.tar.xz
+- deb_dist/backgroundremover_0.1.7-1.dsc
+- deb_dist/backgroundremover_0.1.7-1_source.buildinfo
+- deb_dist/backgroundremover_0.1.7-1_source.changes
+- deb_dist/backgroundremover_0.1.7.orig.tar.gz
+
+You create the debian package by doing this:
+
+```
+cd deb_dist
+dpkg-source -x backgroundremover_0.1.7-1.dsc
+cd backgroundremover-0.1.7
+dpkg-buildpackage
+cd ..
+# name of the debian package: python3-backgroundremover_0.1.7-1_all.deb
+```
+
+stdeb
+-----
+
+- Download source packages from [launchpad](https://launchpad.net/ubuntu/impish/+source/stdeb)
+   - [DSC](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0-1.dsc)
+   - [ORIG.TAR.GZ](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0.orig.tar.gz)
+   - [DEBIAN.TAR.XZ](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0-1.debian.tar.xz)
+- Extract: `dpkg-source -x stdeb_0.10.0-1.dsc`
+- Build: `( cd stdeb-0.10.0; dpkg-buildpackage )`
+- Install: `sudo dpkg -i python3-stdeb_0.10.0-1_all.deb`
+
+Problems
+--------
+
+### dpkg-query: no packages found matching python-all
+
+When trying to create the debian source packages, you get lots of
+output including a stack trace and the error message "dpkg-query: no packages found matching python-all".
+
+This is probably caused by an old version of stdeb (package name "python3-stdeb").
+
+Fix: Install a newer version!
+
+```
 $ python3 setup.py --command-packages=stdeb.command sdist_dsc
 running sdist_dsc
 running egg_info
@@ -31,7 +98,7 @@ Writing backgroundremover-0.1.7/setup.cfg
 creating dist
 Creating tar archive
 removing 'backgroundremover-0.1.7' (and everything under it)
-dpkg-query: Kein Paket gefunden, das auf python-all passt
+dpkg-query: no packages found matching python-all
 ERROR running: /usr/bin/dpkg-query --show --showformat=${Version} python-all
 Traceback (most recent call last):
   File "setup.py", line 12, in <module>
@@ -55,7 +122,15 @@ Traceback (most recent call last):
 RuntimeError: ('returncode %d', 1)
 ```
 
+### Can't locate Debian/Debhelper/Sequence/python3.pm
+
+When trying to create the debian source packages, you get lots of
+output including the error message "Can't locate Debian/Debhelper/Sequence/python3.pm".
+
+Fix: Install "dh-python"!
+
 ```
+$ python3 setup.py --command-packages=stdeb.command sdist_dsc
 ...
  dpkg-source --before-build .
 dpkg-source: info: using options from backgroundremover-0.1.7/debian/source/options: --extend-diff-ignore=\.egg-info$
@@ -89,17 +164,6 @@ Traceback (most recent call last):
     raise CalledProcessError(retcode)
 stdeb.util.CalledProcessError: 2
 ```
-
-stdeb
------
-
-- Download source packages from [launchpad](https://launchpad.net/ubuntu/impish/+source/stdeb)
-   - [DSC](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0-1.dsc)
-   - [ORIG.TAR.GZ](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0.orig.tar.gz)
-   - [DEBIAN.TAR.XZ](https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/stdeb/0.10.0-1/stdeb_0.10.0-1.debian.tar.xz)
-- Extract: `dpkg-source -x stdeb_0.10.0-1.dsc`
-- Build: `( cd stdeb-0.10.0; dpkg-buildpackage )`
-- Install: `sudo dpkg -i python3-stdeb_0.10.0-1_all.deb`
 
 Links
 -----
