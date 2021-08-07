@@ -65,6 +65,23 @@ cd ..
 # name of the debian package: python3-backgroundremover_0.1.7-1_all.deb
 ```
 
+Release To [Github](https://github.com/uli-heller/backgroundremover/releases)
+-----------------
+
+```
+git tag u0.1.7
+git push --tags
+# upload these files
+# - backgroundremover_0.1.7-1.debian.tar.xz
+# - backgroundremover_0.1.7-1.dsc
+# - backgroundremover_0.1.7-1_amd64.buildinfo
+# - backgroundremover_0.1.7-1_amd64.changes
+# - backgroundremover_0.1.7-1_source.buildinfo
+# - backgroundremover_0.1.7-1_source.changes
+# - backgroundremover_0.1.7.orig.tar.gz
+# - python3-backgroundremover_0.1.7-1_all.deb
+```
+
 stdeb
 -----
 
