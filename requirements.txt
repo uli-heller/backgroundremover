@@ -4,7 +4,7 @@ filelock>=3.0.12
 gdown>=3.13.0
 idna>=3.2
 PySocks>=1.7.1
-six==1.16.0
+six>=1.16.0
 urllib3==1.26.6
 numpy>=1.19.4
 scikit-image>=0.17.2
