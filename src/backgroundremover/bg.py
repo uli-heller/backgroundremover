@@ -16,7 +16,7 @@ import torch.nn.functional
 from hsh.library.hash import Hasher
 from tqdm import tqdm
 from .u2net import detect, u2net
-from ..backgroundremover import utilities
+from . import utilities
 
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
@@ -25,7 +25,6 @@ class Net(torch.nn.Module):
     def __init__(self, model_name):
         super(Net, self).__init__()
         hasher = Hasher()
-
         model = {
             'u2netp': (u2net.U2NETP,
                        'e4f636406ca4e2af789941e7f139ee2e',
@@ -162,7 +161,6 @@ def naive_cutout(img, mask):
     return cutout
 
 
-@functools.lru_cache(maxsize=None)
 def get_model(model_name):
     if model_name == "u2netp":
         return detect.load_model(model_name="u2netp")

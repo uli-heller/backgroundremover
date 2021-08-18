@@ -2,7 +2,7 @@
 
 BackgroundRemover is a command line tool to remove background from [video](https://backgroundremover.app/video)
 and [image](https://backgroundremover.app/image), brought to you
-by [https://BackgroundRemover.app](https://backgroundremover.app) which is an app made by [nadermx](https://john.nader.mx) powered by this tool
+by [https://BackgroundRemover.app](https://backgroundremover.app) which is an app made by [nadermx](https://john.nader.mx) powered by this tool, and here is a [short blog post](https://johnathannader.com/my-first-open-source-project/) on why this tool exists
 
 <img alt="background remover image" src="https://backgroundremover.app/static/backgroundremoverexample.png" height="200" />
 <img alt="background remover video" src="/examplegif/backgroundremoverprocessed.gif" height="200" />
@@ -58,7 +58,7 @@ backgroundremover -i "/path/to/image.jpeg" -o "output.png"
 Sometimes it is possible to achieve better results by turning on alpha matting. Example:
 
 ```bash
-backgroundremover -i "/path/to/image.jpeg" a -ae 15 -o "output.png"
+backgroundremover -i "/path/to/image.jpeg" -a -ae 15 -o "output.png"
 ```
 change the model for diferent background removal methods between `u2netp`, `u2net`, or `u2net_human_seg`
 ```bash
