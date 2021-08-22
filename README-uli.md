@@ -59,9 +59,10 @@ You create the debian package by doing this:
 cd deb_dist
 dpkg-source -x backgroundremover_0.1.9-1.dsc
 cd backgroundremover-0.1.9
+sed -i -e "s/) unstable/~impish1) impish/" debian/changelog
 dpkg-buildpackage
 cd ..
-# name of the debian package: python3-backgroundremover_0.1.9-1_all.deb
+# name of the debian package: python3-backgroundremover_0.1.9-1~impish1_all.deb
 ```
 
 ### Release To[Github](https://github.com/uli-heller/backgroundremover/releases)
@@ -75,14 +76,17 @@ git push --tags
 
 Copy these files from the LXC container copy:
 
-- backgroundremover_0.1.9-1.debian.tar.xz
 - backgroundremover_0.1.9-1.dsc
 - backgroundremover_0.1.9-1_amd64.buildinfo
 - backgroundremover_0.1.9-1_amd64.changes
 - backgroundremover_0.1.9-1_source.buildinfo
 - backgroundremover_0.1.9-1_source.changes
+- backgroundremover_0.1.9-1~impish1.debian.tar.xz
+- backgroundremover_0.1.9-1~impish1.dsc
+- backgroundremover_0.1.9-1~impish1_amd64.buildinfo
+- backgroundremover_0.1.9-1~impish1_amd64.changes
 - backgroundremover_0.1.9.orig.tar.gz
-- python3-backgroundremover_0.1.9-1_all.deb
+- python3-backgroundremover_0.1.9-1~impish1_all.deb
 
 I do copy them using this command:
 
