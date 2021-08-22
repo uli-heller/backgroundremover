@@ -43,6 +43,59 @@ dpkg-source: info: unpacking backgroundremover_0.1.9.orig.tar.gz
 dpkg-source: info: unpacking backgroundremover_0.1.9-1.debian.tar.xz
 ```
 
+### Create Debian Package
+
+You basically need the files
+
+- deb_dist/backgroundremover_0.1.9-1.debian.tar.xz
+- deb_dist/backgroundremover_0.1.9-1.dsc
+- deb_dist/backgroundremover_0.1.9-1_source.buildinfo
+- deb_dist/backgroundremover_0.1.9-1_source.changes
+- deb_dist/backgroundremover_0.1.9.orig.tar.gz
+
+You create the debian package by doing this:
+
+```
+cd deb_dist
+dpkg-source -x backgroundremover_0.1.9-1.dsc
+cd backgroundremover-0.1.9
+dpkg-buildpackage
+cd ..
+# name of the debian package: python3-backgroundremover_0.1.9-1_all.deb
+```
+
+### Release To[Github](https://github.com/uli-heller/backgroundremover/releases)
+
+On your desktop:
+
+```
+git tag u0.1.9
+git push --tags
+```
+
+Copy these files from the LXC container copy:
+
+- backgroundremover_0.1.9-1.debian.tar.xz
+- backgroundremover_0.1.9-1.dsc
+- backgroundremover_0.1.9-1_amd64.buildinfo
+- backgroundremover_0.1.9-1_amd64.changes
+- backgroundremover_0.1.9-1_source.buildinfo
+- backgroundremover_0.1.9-1_source.changes
+- backgroundremover_0.1.9.orig.tar.gz
+- python3-backgroundremover_0.1.9-1_all.deb
+
+I do copy them using this command:
+
+```
+mkdir tmp
+cd tmp
+lxc exec backgroundremover-2110 --user 1000 -- bash -c "cd /home/ubuntu/backgroundremover/deb_dist; tar cf - *[^0-9]"|tar xvf -
+```
+
+Upload them
+to [Github](https://github.com/uli-heller/backgroundremover/releases)
+and remove the tmp folder afterwards.
+
 Preparations
 ------------
 
@@ -111,17 +164,17 @@ Release To [Github](https://github.com/uli-heller/backgroundremover/releases)
 -----------------
 
 ```
-git tag u0.1.7
+git tag u0.1.9
 git push --tags
 # upload these files
-# - backgroundremover_0.1.7-1.debian.tar.xz
-# - backgroundremover_0.1.7-1.dsc
-# - backgroundremover_0.1.7-1_amd64.buildinfo
-# - backgroundremover_0.1.7-1_amd64.changes
-# - backgroundremover_0.1.7-1_source.buildinfo
-# - backgroundremover_0.1.7-1_source.changes
-# - backgroundremover_0.1.7.orig.tar.gz
-# - python3-backgroundremover_0.1.7-1_all.deb
+# - backgroundremover_0.1.9-1.debian.tar.xz
+# - backgroundremover_0.1.9-1.dsc
+# - backgroundremover_0.1.9-1_amd64.buildinfo
+# - backgroundremover_0.1.9-1_amd64.changes
+# - backgroundremover_0.1.9-1_source.buildinfo
+# - backgroundremover_0.1.9-1_source.changes
+# - backgroundremover_0.1.9.orig.tar.gz
+# - python3-backgroundremover_0.1.9-1_all.deb
 ```
 
 stdeb
