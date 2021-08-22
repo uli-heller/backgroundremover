@@ -14,7 +14,7 @@ On your desktop:
 
 - Create a LXC container: `lxc launch images:ubuntu/21.10 ubuntu-2110`
 - Stop the LXC container: `lxc stop ubuntu-2110`
-- Copy the LXC container: `lxc copy ubuntu-2110backgroundremover-2110`
+- Copy the LXC container: `lxc copy ubuntu-2110 backgroundremover-2110`
 - Start the LXC container copy: `lxc start backgroundremover-2110`
 - Determine the IP address: `lxc info backgroundremover-2110|grep inet:` -> "inet:  10.2.2.2/24 (global)"
 - Copy the backgroundremover source folder into the LXC container copy
@@ -99,6 +99,101 @@ lxc exec backgroundremover-2110 --user 1000 -- bash -c "cd /home/ubuntu/backgrou
 Upload them
 to [Github](https://github.com/uli-heller/backgroundremover/releases)
 and remove the tmp folder afterwards.
+
+### Do a Test Installation
+
+In order to be sure that the DEB works OK on Ubuntu-21.10, we're doing a test installation:
+
+- Copy the LXC container: `lxc copy ubuntu-2110 test-2110`
+- Start the LXC container copy: `lxc start test-2110`
+- Copy the DEB file into the LXC container copy: `cat python3-backgroundremover_0.1.9-1~impish1_all.deb|lxc exec test-2110 -- bash -c "cat >python3-backgroundremover_0.1.9-1~impish1_all.deb"`
+- Start a shell within the LXC container copy: `lxc exec test-2110 -- bash`
+- Try to install the DEB file: `apt update && apt install -f $(pwd)/python3-backgroundremover_0.1.9-1~impish1_all.deb` -> installs lots of additional packages
+- Terminate the shell: `exit`
+
+Now, we try to verify the installation:
+
+```
+desktop$ lxc exec test-2110 --user 1000 --group 1000 -- bash
+ubuntu@test-2110:/$ cd ~ubuntu
+ubuntu@test-2110:/home/ubuntu$ export HOME=$(pwd)
+ubuntu@test-2110:~$ backgroundremover 
+Traceback (most recent call last):
+  File "/usr/bin/backgroundremover", line 33, in <module>
+    sys.exit(load_entry_point('backgroundremover==0.1.9', 'console_scripts', 'backgroundremover')())
+  File "/usr/bin/backgroundremover", line 25, in importlib_load_entry_point
+    return next(matches).load()
+  File "/usr/lib/python3.9/importlib/metadata.py", line 77, in load
+    module = import_module(match.group('module'))
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/usr/lib/python3/dist-packages/backgroundremover/cmd/cli.py", line 5, in <module>
+    from .. import utilities
+  File "/usr/lib/python3/dist-packages/backgroundremover/utilities.py", line 6, in <module>
+    import ffmpeg
+ModuleNotFoundError: No module named 'ffmpeg'
+ubuntu@test-2110:~$
+
+ubuntu@test-2110:~$ sudo apt install ffmpeg
+...
+ubuntu@test-2110:~$ backgroundremover 
+# still the same errors
+```
+
+Some experiments:
+
+```
+$ pip install ffmpeg-python
+...
+$ backgroundremover 
+Traceback (most recent call last):
+  File "/usr/bin/backgroundremover", line 33, in <module>
+    sys.exit(load_entry_point('backgroundremover==0.1.9', 'console_scripts', 'backgroundremover')())
+  File "/usr/bin/backgroundremover", line 25, in importlib_load_entry_point
+    return next(matches).load()
+  File "/usr/lib/python3.9/importlib/metadata.py", line 77, in load
+    module = import_module(match.group('module'))
+  File "/usr/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/usr/lib/python3/dist-packages/backgroundremover/cmd/cli.py", line 5, in <module>
+    from .. import utilities
+  File "/usr/lib/python3/dist-packages/backgroundremover/utilities.py", line 10, in <module>
+    from .bg import DEVICE, Net, iter_frames, remove_many
+  File "/usr/lib/python3/dist-packages/backgroundremover/bg.py", line 6, in <module>
+    from pymatting.alpha.estimate_alpha_cf import estimate_alpha_cf
+ModuleNotFoundError: No module named 'pymatting'
+
+$ pip install pymatting
+$ pip install moviepy
+$ pip install hsh
+$ pip install gdown
+$ pip install filetype
+$ pip install charset-normalizer
+$ backgroundremover
+Failed to import ahead-of-time-compiled modules.
+This is expected on first import.
+Compiling modules and trying again.
+This might take a minute.
+Successfully imported ahead-of-time-compiled modules.
+Traceback (most recent call last):
+  File "/usr/bin/backgroundremover", line 33, in <module>
+    sys.exit(load_entry_point('backgroundremover==0.1.9', 'console_scripts', 'backgroundremover')())
+  File "/usr/lib/python3/dist-packages/backgroundremover/cmd/cli.py", line 189, in main
+    if args.input.name.rsplit('.', 1)[1] in ['mp4', 'mov', 'webm', 'ogg', 'gif']:
+IndexError: list index out of range
+```
 
 Preparations
 ------------
@@ -312,4 +407,5 @@ Links
 History
 -------
 
+- 2021-08-22: Use Ubuntu-21.10 "impish" as base; there are still lots of python modules missing
 - 2021-08-06: Initial version
