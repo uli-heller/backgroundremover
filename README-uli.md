@@ -1,6 +1,48 @@
 README-uli.md
 =============
 
+Ubuntu-21.10
+------------
+
+I'll start creating packages for Ubuntu-21.10,
+because most of the dependencies are packages for this
+already.
+
+### Preparations
+
+On your desktop:
+
+- Create a LXC container: `lxc launch images:ubuntu/21.10 ubuntu-2110`
+- Stop the LXC container: `lxc stop ubuntu-2110`
+- Copy the LXC container: `lxc copy ubuntu-2110backgroundremover-2110`
+- Start the LXC container copy: `lxc start backgroundremover-2110`
+- Determine the IP address: `lxc info backgroundremover-2110|grep inet:` -> "inet:  10.2.2.2/24 (global)"
+- Copy the backgroundremover source folder into the LXC container copy
+    - Either by doing something like this: `tar cf - ./backgroundremover|lxc exec backgroundremover-2110 --user 1000 -- bash -c "cd /home/ubuntu; tar xvf -"`
+    - Or by: `lxc file push ...`
+    - Or by executing `git clone ...` within the LXC container copy
+- Start a shell within the LXC container copy: `lxc exec backgroundremover-2110 bash`
+
+Within the LXC container copy:
+
+- Install python development packages: `apt install python3-stdeb dh-python`
+
+### Create Debian Source Packages
+
+```
+ubuntu@backgroundremover-2110:~/backgroundremover$ python3 setup.py --command-packages=stdeb.command sdist_dsc
+running sdist_dsc
+running egg_info
+writing src/backgroundremover.egg-info/PKG-INFO
+writing dependency_links to src/backgroundremover.egg-info/dependency_links.txt
+...
+dpkg-buildpackage: info: full upload (original source is included)
+dpkg-source: warning: extracting unsigned source package (backgroundremover_0.1.9-1.dsc)
+dpkg-source: info: extracting backgroundremover in backgroundremover-0.1.9
+dpkg-source: info: unpacking backgroundremover_0.1.9.orig.tar.gz
+dpkg-source: info: unpacking backgroundremover_0.1.9-1.debian.tar.xz
+```
+
 Preparations
 ------------
 
